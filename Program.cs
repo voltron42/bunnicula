@@ -1,20 +1,23 @@
-var builder = WebApplication.CreateBuilder(args);
-var app = builder.Build();
+public class Program {
+    public static async Task Main(string[] args) {
+        var builder = WebApplication.CreateBuilder(args);
+        var app = builder.Build();
 
-app.Urls.Add("http://localhost:5000");
+        app.Urls.Add("http://localhost:5000");
 
-app.MapGet("/", () => "Hello World!");
+        app.MapGet("/", () => "Hello World!");
 
-app.MapGet("/{cityName}/weather", GetWeatherByCity);
+        app.MapGet("/{cityName}/weather", (string cityName) => GetWeatherByCity(app, cityName));
 
-app.Run();
-
-
-Weather GetWeatherByCity(string cityName)
-{
-    app.Logger.LogInformation($"Weather requested for {cityName}.");
-    var weather = new Weather(cityName);
-    return weather;
+        app.Run();
+    }
+ 
+    public static Weather GetWeatherByCity(WebApplication app, string cityName)
+    {
+        app.Logger.LogInformation($"Weather requested for {cityName}.");
+        var weather = new Weather(cityName);
+        return weather;
+    }
 }
 
 public record Weather
